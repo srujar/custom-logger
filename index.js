@@ -7,22 +7,22 @@ const logger = require('./logger');
 const setApiEndPoint = (url) => {
     apiEndPoint = url || apiEndPoint;
 }
-const createLogger = (app, routesToExclude = []) => {
+const createLogger = (app, routesToExclude = [], appKey = null) => {
     app.use(expressWinston.logger({
-        winstonInstance: logger(apiEndPoint, routesToExclude),
+        winstonInstance: logger(apiEndPoint, routesToExclude, appKey),
         statusLevels: true
     }))
-    return logger(apiEndPoint, routesToExclude);
+    return logger(apiEndPoint, routesToExclude, appKey);
 }
 
 const myFormat = format.printf(({ level, meta, timestamp }) => {
     return `${timestamp} ${level}: ${meta.message}`
 })
 
-const createErrorLog = (app, routesToExclude = []) => {
+const createErrorLog = (app, routesToExclude = [], appKey = null) => {
     app.use(expressWinston.errorLogger({
         transports: [
-            new HttpLogTransport({ apiEndPoint, routesToExclude })
+            new HttpLogTransport({ apiEndPoint, routesToExclude, appKey })
         ],
         format: format.combine(
             format.json(),

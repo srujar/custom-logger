@@ -4,10 +4,12 @@ const request = require('request');
 module.exports = class HttpLogTransport extends Transport {
   apiEndPoint;
   routesToExclude;
+  appKey;
   constructor(opts) {
     super(opts);
     this.apiEndPoint = opts.apiEndPoint;
     this.routesToExclude = opts.routesToExclude;
+    this.appKey = opts.appKey;
   }
 
   log(info, callback) {
@@ -18,6 +20,7 @@ module.exports = class HttpLogTransport extends Transport {
         flag = this.routesToExclude.includes(reqUrl) ? false : true;
       }
       if (flag) {
+        info["appKey"] = this.appKey;
         request({
           url: `${this.apiEndPoint}/data`,
           method: "POST",
